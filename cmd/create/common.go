@@ -26,8 +26,8 @@ type CreateResult struct {
 	Result string `json:"result"`
 }
 
-func PrintCreateResult(resp *api.RESTResponse, printOption string) {
-	if printOption == "json" {
+func PrintCreateResult(resp *http.Response, o api.RESTOptions) {
+	if o.PrintOption == "json" {
 		resultIndent, _ := json.MarshalIndent(resp, "", "\t")
 		fmt.Println(string(resultIndent))
 		return

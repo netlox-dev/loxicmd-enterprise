@@ -17,6 +17,7 @@
 package get
 
 import (
+	"context"
 	"fmt"
 	"loxicmd/pkg/api"
 	"net/http"
@@ -52,7 +53,7 @@ func NewGetL4TraceCmd(restOptions *api.RESTOptions) *cobra.Command {
 		Long:  `Display L4 connection tracing configuration and statistics`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api.NewLoxiClient(restOptions)
-			ctx := api.NewCLIContext()
+			ctx := context.TODO()
 			resp, err := client.L4Trace().Get(ctx)
 			if err != nil {
 				fmt.Printf("Error: %s\n", err.Error())

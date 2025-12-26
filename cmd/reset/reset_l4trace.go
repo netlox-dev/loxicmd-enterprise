@@ -17,6 +17,7 @@
 package reset
 
 import (
+	"context"
 	"fmt"
 	"loxicmd/pkg/api"
 	"net/http"
@@ -31,7 +32,7 @@ func NewResetL4TraceStatsCmd(restOptions *api.RESTOptions) *cobra.Command {
 		Long:  `Clear all L4 connection tracing statistics counters`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api.NewLoxiClient(restOptions)
-			ctx := api.NewCLIContext()
+			ctx := context.TODO()
 			resp, err := client.L4Trace().ResetStats(ctx)
 			if err != nil {
 				fmt.Printf("Error: %s\n", err.Error())

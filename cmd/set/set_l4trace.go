@@ -17,6 +17,8 @@
 package set
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"loxicmd/pkg/api"
 	"net/http"
@@ -49,7 +51,7 @@ Examples:
 			}
 
 			client := api.NewLoxiClient(restOptions)
-			ctx := api.NewCLIContext()
+			ctx := context.TODO()
 			resp, err := client.L4Trace().SetSampling(ctx, &l4TraceSamplingMod)
 			if err != nil {
 				fmt.Printf("Error: %s\n", err.Error())
@@ -67,4 +69,13 @@ Examples:
 	SetL4TraceSamplingCmd.MarkFlagRequired("rate")
 
 	return SetL4TraceSamplingCmd
+}
+
+func PrintSetResult(resp *api.RESTResponse, printOption string) {
+	if printOption == "json" {
+		resultIndent, _ := json.MarshalIndent(resp, "", "\t")
+		fmt.Println(string(resultIndent))
+		return
+	}
+	fmt.Println("L4 trace sampling rate updated successfully")
 }

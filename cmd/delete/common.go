@@ -26,8 +26,8 @@ type DeleteResult struct {
 	Result string `json:"result"`
 }
 
-func PrintDeleteResult(resp *api.RESTResponse, printOption string) {
-	if printOption == "json" {
+func PrintDeleteResult(resp *http.Response, o api.RESTOptions) {
+	if o.PrintOption == "json" {
 		resultIndent, _ := json.MarshalIndent(resp, "", "\t")
 		fmt.Println(string(resultIndent))
 		return

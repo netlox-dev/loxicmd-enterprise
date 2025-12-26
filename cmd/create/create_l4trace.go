@@ -17,6 +17,8 @@
 package create
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"loxicmd/pkg/api"
 	"net/http"
@@ -49,14 +51,14 @@ Examples:
 			}
 
 			client := api.NewLoxiClient(restOptions)
-			ctx := api.NewCLIContext()
+			ctx := context.TODO()
 			resp, err := client.L4Trace().EnableCreate(ctx, &l4TraceEnableMod)
 			if err != nil {
 				fmt.Printf("Error: %s\n", err.Error())
 				return
 			}
 			if resp.StatusCode == http.StatusOK {
-				PrintCreateResult(resp, restOptions.PrintOption)
+				PrintL4TraceCreateResult(resp, restOptions.PrintOption)
 				return
 			}
 		},
@@ -66,4 +68,13 @@ Examples:
 		"Sampling rate (0-100 percent, default: 100)")
 
 	return CreateL4TraceCmd
+}
+
+func PrintL4TraceCreateResult(resp *api.RESTResponse, printOption string) {
+	if printOption == "json" {
+		resultIndent, _ := json.MarshalIndent(resp, "", "\t")
+		fmt.Println(string(resultIndent))
+		return
+	}
+	fmt.Println("L4 tracing enabled successfully")
 }

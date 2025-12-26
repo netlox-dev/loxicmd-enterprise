@@ -197,26 +197,3 @@ func NewDeleteLoadBalancerCmd(restOptions *api.RESTOptions) *cobra.Command {
 
 	return deleteLbCmd
 }
-
-func PrintDeleteResult(resp *http.Response, o api.RESTOptions) {
-	result := DeleteLoadBalancerResult{}
-	resultByte, err := io.ReadAll(resp.Body)
-	//fmt.Printf("Debug: response.Body: %s\n", string(resultByte))
-
-	if err != nil {
-		fmt.Printf("Error: Failed to read HTTP response: (%s)\n", err.Error())
-		return
-	}
-	if err := json.Unmarshal(resultByte, &result); err != nil {
-		fmt.Printf("Error: Failed to unmarshal HTTP response: (%s)\n", err.Error())
-		return
-	}
-
-	if o.PrintOption == "json" {
-		resultIndent, _ := json.MarshalIndent(resp.Body, "", "\t")
-		fmt.Println(string(resultIndent))
-		return
-	}
-
-	fmt.Printf("%s\n", result.Result)
-}

@@ -17,6 +17,8 @@
 package delete
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"loxicmd/pkg/api"
 	"net/http"
@@ -31,18 +33,27 @@ func NewDeleteL4TraceCmd(restOptions *api.RESTOptions) *cobra.Command {
 		Long:  `Stop tracing TCP/SCTP connections`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api.NewLoxiClient(restOptions)
-			ctx := api.NewCLIContext()
+			ctx := context.TODO()
 			resp, err := client.L4Trace().Delete(ctx)
 			if err != nil {
 				fmt.Printf("Error: %s\n", err.Error())
 				return
 			}
 			if resp.StatusCode == http.StatusOK {
-				PrintDeleteResult(resp, restOptions.PrintOption)
+				PrintL4TraceDeleteResult(resp, restOptions.PrintOption)
 				return
 			}
 		},
 	}
 
 	return DeleteL4TraceCmd
+}
+
+func PrintL4TraceDeleteResult(resp *api.RESTResponse, printOption string) {
+	if printOption == "json" {
+		resultIndent, _ := json.MarshalIndent(resp, "", "\t")
+		fmt.Println(string(resultIndent))
+		return
+	}
+	fmt.Println("L4 tracing disabled successfully")
 }

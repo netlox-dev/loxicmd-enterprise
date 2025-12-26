@@ -403,30 +403,6 @@ ex)
 	return createLbCmd
 }
 
-func PrintCreateResult(resp *http.Response, o api.RESTOptions) {
-	result := CreateLoadBalancerResult{}
-	resultByte, err := io.ReadAll(resp.Body)
-	//fmt.Printf("Debug: response.Body: %s\n", string(resultByte))
-
-	if err != nil {
-		fmt.Printf("Error: Failed to read HTTP response: (%s)\n", err.Error())
-		return
-	}
-	if err := json.Unmarshal(resultByte, &result); err != nil {
-		fmt.Printf("Error: Failed to unmarshal HTTP response: (%s)\n", err.Error())
-		return
-	}
-
-	if o.PrintOption == "json" {
-		// TODO: need to test MarshalIndent
-		resultIndent, _ := json.MarshalIndent(resp.Body, "", "\t")
-		fmt.Println(string(resultIndent))
-		return
-	}
-
-	fmt.Printf("%s\n", result.Result)
-}
-
 func GetPortPairList(portPairStrList []string) (map[uint16][]uint16, error) {
 	result := make(map[uint16][]uint16)
 	for _, portPairStr := range portPairStrList {
