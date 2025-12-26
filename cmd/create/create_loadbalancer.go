@@ -17,10 +17,8 @@ package create
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"loxicmd/pkg/api"
 	"net"
 	"net/http"

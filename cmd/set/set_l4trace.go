@@ -58,7 +58,7 @@ Examples:
 				return
 			}
 			if resp.StatusCode == http.StatusOK {
-				PrintSetResult(resp, restOptions.PrintOption)
+				PrintL4TraceSamplingResult(resp, restOptions.PrintOption)
 				return
 			}
 		},
@@ -71,7 +71,7 @@ Examples:
 	return SetL4TraceSamplingCmd
 }
 
-func PrintSetResult(resp *api.RESTResponse, printOption string) {
+func PrintL4TraceSamplingResult(resp *api.RESTResponse, printOption string) {
 	if printOption == "json" {
 		resultIndent, _ := json.MarshalIndent(resp, "", "\t")
 		fmt.Println(string(resultIndent))

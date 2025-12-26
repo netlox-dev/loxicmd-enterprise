@@ -17,10 +17,8 @@ package delete
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"loxicmd/pkg/api"
 	"net/http"
 	"strconv"
