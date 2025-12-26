@@ -1,6 +1,6 @@
 # loxicmd
 
-![build workflow](https://github.com/loxilb-io/loxicmd/actions/workflows/build.yml/badge.svg)
+![build workflow](https://github.com/netlox-dev/loxicmd-enterprise/actions/workflows/build.yml/badge.svg)
 ![Go Version](https://img.shields.io/github/go-mod/go-version/loxilb-io/loxicmd)
 ![License](https://img.shields.io/github/license/loxilb-io/loxicmd)
 
@@ -41,7 +41,7 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/loxilb-io/loxicmd.git
+   git clone https://github.com/netlox-dev/loxicmd-enterprise.git
    cd loxicmd
    ```
 
@@ -62,7 +62,7 @@
 
 ### Installing Pre-built Binaries
 
-Download the latest release from the [releases page](https://github.com/loxilb-io/loxicmd/releases) and add it to your PATH.
+Download the latest release from the [releases page](https://github.com/netlox-dev/loxicmd-enterprise/releases) and add it to your PATH.
 
 ## Quick Start
 
