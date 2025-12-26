@@ -21,8 +21,6 @@ import (
 	"net/http"
 )
 
-const loxiL4TraceResource = "config/l4trace"
-
 // L4Trace represents the L4 connection tracing API client
 type L4Trace struct {
 	CommonAPI
