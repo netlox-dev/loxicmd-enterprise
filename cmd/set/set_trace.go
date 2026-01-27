@@ -330,7 +330,7 @@ Examples:
 	}
 
 	setTraceCatalogParserCmd.Flags().IntVar(&catalogID, "catalog-id", 0, "Catalog ID (1-255)")
-	setTraceCatalogParserCmd.Flags().StringVarP(&parserName, "parser", "p", "", "Parser name (e.g., openai, mcp, mock)")
+	setTraceCatalogParserCmd.Flags().StringVarP(&parserName, "parser", "", "", "Parser name (e.g., openai, mcp, mock)")
 
 	setTraceCatalogParserCmd.MarkFlagRequired("catalog-id")
 	setTraceCatalogParserCmd.MarkFlagRequired("parser")
