@@ -27,9 +27,10 @@ import (
 
 func NewResetL4TraceStatsCmd(restOptions *api.RESTOptions) *cobra.Command {
 	var ResetL4TraceStatsCmd = &cobra.Command{
-		Use:   "l4trace-stats",
-		Short: "Reset L4 tracing statistics",
-		Long:  `Clear all L4 connection tracing statistics counters`,
+		Use:     "l4trace",
+		Short:   "Reset L4 tracing statistics",
+		Aliases: []string{"l4trace-stats"},
+		Long:    `Clear all L4 connection tracing statistics counters`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api.NewLoxiClient(restOptions)
 			ctx := context.TODO()
@@ -44,6 +45,5 @@ func NewResetL4TraceStatsCmd(restOptions *api.RESTOptions) *cobra.Command {
 			}
 		},
 	}
-
 	return ResetL4TraceStatsCmd
 }

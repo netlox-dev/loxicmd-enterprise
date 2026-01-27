@@ -22,9 +22,6 @@ import (
 	"io"
 	"loxicmd/pkg/api"
 	"net/http"
-	"os"
-	"os/exec"
-	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -98,8 +95,9 @@ func PrintGetSNIResult(resp *http.Response, o api.RESTOptions) {
 	}
 
 	// Print table header
-	data = append(data, []string{"HOSTNAME", "CERT-PATH"})
-
+	//data = append(data, []string{"HOSTNAME", "CERT-PATH"})
+	table := TableInit()
+	table.SetHeader(SNI_TITLE)
 	// Print each certificate entry
 	for _, attr := range sniResp.SniAttr {
 		hostname := "N/A"
@@ -115,53 +113,5 @@ func PrintGetSNIResult(resp *http.Response, o api.RESTOptions) {
 		data = append(data, []string{hostname, certPath})
 	}
 
-	// Print table
-	PrintTable(data)
-}
-
-func PrintTable(data [][]string) {
-	if len(data) == 0 {
-		return
-	}
-
-	// Calculate column widths
-	colWidths := make([]int, len(data[0]))
-	for _, row := range data {
-		for i, cell := range row {
-			if len(cell) > colWidths[i] {
-				colWidths[i] = len(cell)
-			}
-		}
-	}
-
-	// Check if we can use 'column' command for better formatting
-	if _, err := exec.LookPath("column"); err == nil {
-		// Use column command
-		var output strings.Builder
-		for _, row := range data {
-			output.WriteString(strings.Join(row, "\t"))
-			output.WriteString("\n")
-		}
-		cmd := exec.Command("column", "-t", "-s", "\t")
-		cmd.Stdin = strings.NewReader(output.String())
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		_ = cmd.Run()
-	} else {
-		// Manual table formatting
-		for i, row := range data {
-			for j, cell := range row {
-				fmt.Printf("%-*s  ", colWidths[j], cell)
-			}
-			fmt.Println()
-			if i == 0 {
-				// Print separator after header
-				for j := range row {
-					fmt.Print(strings.Repeat("-", colWidths[j]))
-					fmt.Print("  ")
-				}
-				fmt.Println()
-			}
-		}
-	}
+	TableShow(data, table)
 }

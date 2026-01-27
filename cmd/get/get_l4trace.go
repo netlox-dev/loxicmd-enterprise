@@ -50,7 +50,7 @@ func NewGetL4TraceCmd(restOptions *api.RESTOptions) *cobra.Command {
 	var GetL4TraceCmd = &cobra.Command{
 		Use:   "l4trace",
 		Short: "Get L4 connection tracing status",
-		Long:  `Display L4 connection tracing configuration and statistics`,
+		Long:  `Display L4 connection tracing configuration and statistics. status, stats, connections. If no sub-command is specified, all information will be displayed.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api.NewLoxiClient(restOptions)
 			ctx := context.TODO()
@@ -60,16 +60,132 @@ func NewGetL4TraceCmd(restOptions *api.RESTOptions) *cobra.Command {
 				return
 			}
 			if resp.StatusCode == http.StatusOK {
-				PrintGetL4TraceResult(resp, restOptions.PrintOption)
+				PrintGetL4TraceStatusResult(resp, restOptions.PrintOption)
+				PrintGetL4TraceStatsResult(resp, restOptions.PrintOption)
+				PrintGetL4TraceConnectionResult(resp, restOptions.PrintOption)
 				return
 			}
 		},
 	}
+	GetL4TraceCmd.AddCommand(NewGetL4TraceStatusCmd(restOptions))
+	GetL4TraceCmd.AddCommand(NewGetL4TraceStatsCmd(restOptions))
+	GetL4TraceCmd.AddCommand(NewGetL4TraceConnectionsCmd(restOptions))
 
 	return GetL4TraceCmd
 }
 
-func PrintGetL4TraceResult(resp *api.RESTResponse, printOption string) {
+func NewGetL4TraceStatusCmd(restOptions *api.RESTOptions) *cobra.Command {
+	var GetL4TraceStatusCmd = &cobra.Command{
+		Use:   "status",
+		Short: "Get L4 connection tracing status",
+		Long:  `Display L4 connection tracing configuration status.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			client := api.NewLoxiClient(restOptions)
+			ctx := context.TODO()
+			resp, err := client.L4Trace().Get(ctx)
+			if err != nil {
+				fmt.Printf("Error: %s\n", err.Error())
+				return
+			}
+			if resp.StatusCode == http.StatusOK {
+				PrintGetL4TraceStatusResult(resp, restOptions.PrintOption)
+				return
+			}
+		},
+	}
+	return GetL4TraceStatusCmd
+}
+
+func NewGetL4TraceStatsCmd(restOptions *api.RESTOptions) *cobra.Command {
+	var GetL4TraceStatsCmd = &cobra.Command{
+		Use:   "stats",
+		Short: "Get L4 connection tracing statistics",
+		Long:  `Display L4 connection tracing statistics.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			client := api.NewLoxiClient(restOptions)
+			ctx := context.TODO()
+			resp, err := client.L4Trace().Get(ctx)
+			if err != nil {
+				fmt.Printf("Error: %s\n", err.Error())
+				return
+			}
+			if resp.StatusCode == http.StatusOK {
+				PrintGetL4TraceStatsResult(resp, restOptions.PrintOption)
+				return
+			}
+		},
+	}
+	return GetL4TraceStatsCmd
+}
+
+func NewGetL4TraceConnectionsCmd(restOptions *api.RESTOptions) *cobra.Command {
+	var GetL4TraceConnectionsCmd = &cobra.Command{
+		Use:   "connections",
+		Short: "Get L4 connection tracing connection statistics",
+		Long:  `Display L4 connection tracing connection statistics.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			client := api.NewLoxiClient(restOptions)
+			ctx := context.TODO()
+			resp, err := client.L4Trace().Get(ctx)
+			if err != nil {
+				fmt.Printf("Error: %s\n", err.Error())
+				return
+			}
+			if resp.StatusCode == http.StatusOK {
+				PrintGetL4TraceConnectionResult(resp, restOptions.PrintOption)
+				return
+			}
+		},
+	}
+	return GetL4TraceConnectionsCmd
+}
+
+func PrintGetL4TraceStatusResult(resp *api.RESTResponse, printOption string) {
+	if resp.Result == nil {
+		fmt.Println("No L4 trace status available")
+		return
+	}
+
+	status, ok := resp.Result.(L4TraceStatusModel)
+	if !ok {
+		fmt.Println("Error: Invalid response format")
+		return
+	}
+	// Prepare data for table display
+	var data [][]string
+	// Table Init
+	table := TableInit()
+
+	table.SetHeader(TRACING_STATUS_TITLE)
+	data = append(data, []string{fmt.Sprintf("%v", status.Enabled), fmt.Sprintf("%d", status.SamplingRate), fmt.Sprintf("%d", status.ConfigVersion)})
+	// Rendering the load balance data to table
+	TableShow(data, table)
+}
+
+func PrintGetL4TraceStatsResult(resp *api.RESTResponse, printOption string) {
+	if resp.Result == nil {
+		fmt.Println("No L4 trace status available")
+		return
+	}
+
+	status, ok := resp.Result.(L4TraceStatusModel)
+	if !ok {
+		fmt.Println("Error: Invalid response format")
+		return
+	}
+	// Prepare data for table display
+	var data [][]string
+	// Table Init
+	table := TableInit()
+
+	table.SetHeader(TRACING_STATISTICS_TITLE)
+	data = append(data, []string{fmt.Sprintf("%v", status.Stats.TotalEvents), fmt.Sprintf("%d", status.Stats.SampledEvents), fmt.Sprintf("%d", status.Stats.DroppedEvents), fmt.Sprintf("%d", status.Stats.TCPEvents), fmt.Sprintf("%d", status.Stats.SctpEvents)})
+
+	// Rendering the load balance data to table
+	TableShow(data, table)
+}
+
+func PrintGetL4TraceConnectionResult(resp *api.RESTResponse, printOption string) {
 	if resp.Result == nil {
 		fmt.Println("No L4 trace status available")
 		return
@@ -81,22 +197,12 @@ func PrintGetL4TraceResult(resp *api.RESTResponse, printOption string) {
 		return
 	}
 
-	// Print in human-readable format
-	fmt.Println("=== L4 Connection Tracing Status ===")
-	fmt.Printf("Enabled:         %v\n", status.Enabled)
-	fmt.Printf("Sampling Rate:   %d%%\n", status.SamplingRate)
-	fmt.Printf("Config Version:  %d\n", status.ConfigVersion)
-	fmt.Println("\n=== Statistics ===")
-	fmt.Printf("Total Events:    %d\n", status.Stats.TotalEvents)
-	fmt.Printf("Sampled Events:  %d\n", status.Stats.SampledEvents)
-	fmt.Printf("Dropped Events:  %d\n", status.Stats.DroppedEvents)
-	fmt.Printf("TCP Events:      %d\n", status.Stats.TCPEvents)
-	fmt.Printf("SCTP Events:     %d\n", status.Stats.SctpEvents)
-	fmt.Println("\n=== Connection Lifecycle ===")
-	fmt.Printf("New:             %d\n", status.Stats.ConnNew)
-	fmt.Printf("Established:     %d\n", status.Stats.ConnEstablished)
-	fmt.Printf("Closed (Clean):  %d\n", status.Stats.ConnClosed)
-	fmt.Printf("Closed (Timeout):%d\n", status.Stats.ConnTimeout)
-	fmt.Printf("Closed (Reset):  %d\n", status.Stats.ConnReset)
-	fmt.Printf("Errors:          %d\n", status.Stats.ConnError)
+	// Prepare data for table display
+	var data [][]string
+	// Table Init
+	table := TableInit()
+	table.SetHeader(TRACING_CONNECTION_TITLE)
+	data = append(data, []string{fmt.Sprintf("%d", status.Stats.ConnNew), fmt.Sprintf("%d", status.Stats.ConnEstablished), fmt.Sprintf("%d", status.Stats.ConnClosed), fmt.Sprintf("%d", status.Stats.ConnTimeout), fmt.Sprintf("%d", status.Stats.ConnReset), fmt.Sprintf("%d", status.Stats.ConnError)})
+	// Rendering the load balance data to table
+	TableShow(data, table)
 }

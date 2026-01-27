@@ -59,17 +59,29 @@ type LoadBalancerService struct {
 	Host                 string   `json:"host,omitempty"     yaml:"path"`
 	PpV2                 bool     `json:"proxyprotocolv2"    yaml:"proxyprotocolv2"`
 	Egress               bool     `json:"egress"             yaml:"egress"`
-	LLMType              string   `json:"llm_type,omitempty" yaml:"llm_type"`
-	TraceType            string   `json:"trace_type,omitempty" yaml:"trace_type"`
-	PathPrefix           string   `json:"path_prefix,omitempty"    yaml:"path_prefix"`
-	PathMatchMode        string   `json:"path_match_mode,omitempty" yaml:"path_match_mode"`
-	BackendProtocol      string   `json:"backend_protocol,omitempty" yaml:"backend_protocol"`
-	SessionHeaderName    string   `json:"session_header_name,omitempty" yaml:"session_header_name"`
-	ChwblPrefixHashLevel int      `json:"chwbl_prefix_hash_level,omitempty" yaml:"chwbl_prefix_hash_level"`
-	ChwblPrefixHashFlags int      `json:"chwbl_prefix_hash_flags,omitempty" yaml:"chwbl_prefix_hash_flags"`
-	ChwblMeanLoadFactor  int      `json:"chwbl_mean_load_factor,omitempty" yaml:"chwbl_mean_load_factor"`
-	ChwblReplication     int      `json:"chwbl_replication,omitempty" yaml:"chwbl_replication"`
-	ChwblEnableCacheSalt bool     `json:"chwbl_enable_cache_salt,omitempty" yaml:"chwbl_enable_cache_salt"`
+	LLMType              string   `json:"llmType,omitempty" yaml:"llmType"`
+	TraceType            string   `json:"traceType,omitempty" yaml:"traceType"`
+	PathPrefix           string   `json:"pathPrefix,omitempty"    yaml:"pathPrefix"`
+	PathMatchMode        string   `json:"pathMatchMode,omitempty" yaml:"pathMatchMode"`
+	BackendProtocol      string   `json:"backendProtocol,omitempty" yaml:"backendProtocol"`
+	SessionHeaderName    string   `json:"sessionHeaderName,omitempty" yaml:"sessionHeaderName"`
+	ChwblPrefixHashLevel int      `json:"chwblPrefixHashLevel,omitempty" yaml:"chwblPrefixHashLevel"`
+	ChwblPrefixHashFlags int      `json:"chwblPrefixHashFlags,omitempty" yaml:"chwblPrefixHashFlags"`
+	ChwblMeanLoadFactor  int      `json:"chwblMeanLoadFactor,omitempty" yaml:"chwblMeanLoadFactor"`
+	ChwblReplication     int      `json:"chwblReplication,omitempty" yaml:"chwblReplication"`
+	ChwblEnableCacheSalt bool     `json:"chwblEnableCacheSalt,omitempty" yaml:"chwblEnableCacheSalt"`
+	// Deprecated fields - to be removed eventually
+	LLMTypeOld              string `json:"llm_type,omitempty" yaml:"llm_type" deprecated:"Use llmType instead of llm_type"`
+	TraceTypeOld            string `json:"trace_type,omitempty" yaml:"trace_type" deprecated:"Use traceType instead of trace_type"`
+	PathPrefixOld           string `json:"path_prefix,omitempty"    yaml:"path_prefix" deprecated:"Use pathPrefix instead of path_prefix"`
+	PathMatchModeOld        string `json:"path_match_mode,omitempty" yaml:"path_match_mode" deprecated:"Use pathMatchMode instead of path_match_mode"`
+	BackendProtocolOld      string `json:"backend_protocol,omitempty" yaml:"backend_protocol" deprecated:"Use backendProtocol instead of backend_protocol"`
+	SessionHeaderNameOld    string `json:"session_header_name,omitempty" yaml:"session_header_name" deprecated:"Use sessionHeaderName instead of session_header_name"`
+	ChwblPrefixHashLevelOld int    `json:"chwbl_prefix_hash_level,omitempty" yaml:"chwbl_prefix_hash_level" deprecated:"Use chwblPrefixHashLevel instead of chwbl_prefix_hash_level"`
+	ChwblPrefixHashFlagsOld int    `json:"chwbl_prefix_hash_flags,omitempty" yaml:"chwbl_prefix_hash_flags" deprecated:"Use chwblPrefixHashFlags instead of chwbl_prefix_hash_flags"`
+	ChwblMeanLoadFactorOld  int    `json:"chwbl_mean_load_factor,omitempty" yaml:"chwbl_mean_load_factor" deprecated:"Use chwblMeanLoadFactor instead of chwbl_mean_load_factor"`
+	ChwblReplicationOld     int    `json:"chwbl_replication,omitempty" yaml:"chwbl_replication" deprecated:"Use chwblReplication instead of chwbl_replication"`
+	ChwblEnableCacheSaltOld bool   `json:"chwbl_enable_cache_salt,omitempty" yaml:"chwbl_enable_cache_salt" deprecated:"Use chwblEnableCacheSalt instead of chwbl_enable_cache_salt"`
 }
 
 type LoadBalancerEndpoint struct {

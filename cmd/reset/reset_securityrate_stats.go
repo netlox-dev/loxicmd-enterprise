@@ -28,9 +28,10 @@ import (
 
 func NewResetSecurityRateStatsCmd(restOptions *api.RESTOptions) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "securityrate-stats",
-		Short: "Reset security rate statistics",
-		Long:  "Reset all accumulated security rate limiting statistics (SYN flood, connection rate, UDP flood) to zero",
+		Use:     "securityrate",
+		Aliases: []string{"securityrate-stats"},
+		Short:   "Reset security rate statistics",
+		Long:    "Reset all accumulated security rate limiting statistics (SYN flood, connection rate, UDP flood) to zero",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := api.NewLoxiClient(restOptions)
 			ctx := context.TODO()
@@ -49,10 +50,10 @@ func NewResetSecurityRateStatsCmd(restOptions *api.RESTOptions) *cobra.Command {
 			defer resp.Body.Close()
 
 			if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusNoContent {
-				fmt.Printf("✅ Security rate statistics reset successfully\n")
+				fmt.Printf("Security rate statistics reset successfully\n")
 				return
 			} else {
-				fmt.Printf("❌ Failed to reset security rate statistics (HTTP %d)\n", resp.StatusCode)
+				fmt.Printf("Failed to reset security rate statistics (HTTP %d)\n", resp.StatusCode)
 			}
 		},
 	}

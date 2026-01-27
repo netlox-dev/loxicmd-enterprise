@@ -315,8 +315,19 @@ ex)
 					ChwblMeanLoadFactor:  o.ChwblMeanLoadFactor,
 					ChwblReplication:     o.ChwblReplication,
 					ChwblEnableCacheSalt: o.ChwblEnableCacheSalt,
+					// Deprecated fields - to be removed eventually
+					LLMTypeOld:              o.LLMType,
+					PathPrefixOld:           o.PathPrefix,
+					PathMatchModeOld:        o.PathMatchMode,
+					BackendProtocolOld:      o.BackendProtocol,
+					TraceTypeOld:            o.TraceType,
+					SessionHeaderNameOld:    o.SessionHeaderName,
+					ChwblPrefixHashLevelOld: o.ChwblPrefixHashLevel,
+					ChwblPrefixHashFlagsOld: o.ChwblPrefixHashFlags,
+					ChwblMeanLoadFactorOld:  o.ChwblMeanLoadFactor,
+					ChwblReplicationOld:     o.ChwblReplication,
+					ChwblEnableCacheSaltOld: o.ChwblEnableCacheSalt,
 				}
-
 				lbModel.Service = lbService
 				for endpoint, weight := range endpointPair {
 					targetPorts := portTargetPorts[startSPort]
@@ -398,6 +409,19 @@ ex)
 	createLbCmd.Flags().IntVarP(&o.ChwblMeanLoadFactor, "chwbl-mean-load-factor", "", 125, "CHWBL/CHWBL_HASH max load factor percentage (sel=chwbl or sel=chwblwrr): 100-300, default 125 (allows 25%% overload)")
 	createLbCmd.Flags().IntVarP(&o.ChwblReplication, "chwbl-replication", "", 100, "CHWBL/CHWBL_HASH virtual nodes per endpoint (sel=chwbl or sel=chwblwrr): 1-1024, default 100")
 	createLbCmd.Flags().BoolVarP(&o.ChwblEnableCacheSalt, "chwbl-enable-cache-salt", "", false, "CHWBL/CHWBL_HASH require cache_salt field (sel=chwbl or sel=chwblwrr) for multi-tenant isolation")
+	// format change
+	createLbCmd.Flags().StringVarP(&o.LLMType, "llmType", "", o.LLMType, "LLM catalog profile for GPU-aware load balancing (e.g., chat-interactive, rag-longcontext, batch-inference, code-generation, default)")
+	createLbCmd.Flags().StringVarP(&o.TraceType, "traceType", "", o.TraceType, "Tracing catalog name for deep inspection and protocol analysis (e.g., openai, anthropic, mcp, default)")
+	createLbCmd.Flags().StringVarP(&o.PathPrefix, "pathPrefix", "", o.PathPrefix, "URL path prefix for L7 load balancing (e.g., /v1/users, /api/v1)")
+	createLbCmd.Flags().StringVarP(&o.PathMatchMode, "pathMatchMode", "", "disabled", "Path matching mode: disabled (default), prefix (LPM), or exact")
+	createLbCmd.Flags().StringVarP(&o.BackendProtocol, "backendProtocol", "", "http1", "Backend protocol capability: http1 (HTTP/1.1 only, default), http2 (HTTP/2 only), both (supports both)")
+	createLbCmd.Flags().StringVarP(&o.SessionHeaderName, "sessionHeaderName", "", o.SessionHeaderName, "Custom session header name for persist mode (sel=persist) - e.g., mcp-session-id, x-session-token, authorization")
+	createLbCmd.Flags().IntVarP(&o.ChwblPrefixHashLevel, "chwblPrefixHashLevel", "", 1, "CHWBL/CHWBL_HASH prefix hash level (sel=chwbl or sel=chwblwrr): 1=Level1, 2=Level1+Level2, 3=Level1+Level2+Level3")
+	createLbCmd.Flags().IntVarP(&o.ChwblPrefixHashFlags, "chwblPrefixHashFlags", "", 0, "CHWBL/CHWBL_HASH optional field inclusion flags (sel=chwbl or sel=chwblwrr): 0=auto-detect, bitfield for LoRA/image/audio/cache_salt/tools/session/RAG")
+	createLbCmd.Flags().IntVarP(&o.ChwblMeanLoadFactor, "chwblMeanLoadFactor", "", 125, "CHWBL/CHWBL_HASH max load factor percentage (sel=chwbl or sel=chwblwrr): 100-300, default 125 (allows 25%% overload)")
+	createLbCmd.Flags().IntVarP(&o.ChwblReplication, "chwblReplication", "", 100, "CHWBL/CHWBL_HASH virtual nodes per endpoint (sel=chwbl or sel=chwblwrr): 1-1024, default 100")
+	createLbCmd.Flags().BoolVarP(&o.ChwblEnableCacheSalt, "chwblEnableCacheSalt", "", false, "CHWBL/CHWBL_HASH require cache_salt field (sel=chwbl or sel=chwblwrr) for multi-tenant isolation")
+
 	return createLbCmd
 }
 

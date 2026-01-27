@@ -316,18 +316,35 @@ func PrintTraceOTLP(resp *http.Response, o api.RESTOptions) {
 
 	// Table output
 	table := TableInit()
-	table.SetHeader([]string{"PROPERTY", "VALUE"})
+	table.SetHeader(TRACE_TITLE)
 
 	var data [][]string
-	data = append(data, []string{"Endpoint", otlpConfig.Endpoint})
-	data = append(data, []string{"Protocol", otlpConfig.Protocol})
-	data = append(data, []string{"Use TLS", fmt.Sprintf("%v", otlpConfig.UseTLS)})
-	data = append(data, []string{"Skip TLS Verify", fmt.Sprintf("%v", otlpConfig.TLSSkipVerify)})
-	data = append(data, []string{"Connected", fmt.Sprintf("%v", otlpConfig.Connected)})
+	var firstRow []string
+
+	firstRow = []string{
+		otlpConfig.Endpoint,
+		otlpConfig.Protocol,
+		fmt.Sprintf("%v", otlpConfig.UseTLS),
+		fmt.Sprintf("%v", otlpConfig.TLSSkipVerify),
+		fmt.Sprintf("%v", otlpConfig.Connected),
+	}
+
+	// Handle headers
 	if len(otlpConfig.Headers) > 0 {
+		headerCount := 0
 		for k, v := range otlpConfig.Headers {
-			data = append(data, []string{fmt.Sprintf("Header: %s", k), v})
+			if headerCount == 0 {
+				// First header goes on the same row as the endpoint info
+				firstRow = append(firstRow, k, v)
+				data = append(data, firstRow)
+			} else {
+				// Remaining headers go on separate rows
+				data = append(data, []string{"", "", "", "", "", k, v})
+			}
+			headerCount++
 		}
+	} else {
+		data = append(data, firstRow)
 	}
 
 	TableShow(data, table)

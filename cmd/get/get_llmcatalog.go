@@ -117,7 +117,7 @@ func PrintGetLLMCatalogsResult(resp *http.Response, o api.RESTOptions) {
 
 	// Table Init
 	table := TableInit()
-	table.SetHeader([]string{"NAME", "DESCRIPTION", "QUEUE_WEIGHT", "SWAP_WEIGHT", "CACHE_WEIGHT", "BUILTIN"})
+	table.SetHeader(LLM_CATALOG_TITLE)
 
 	var data [][]string
 	for _, catalog := range catalogs {
@@ -128,10 +128,11 @@ func PrintGetLLMCatalogsResult(resp *http.Response, o api.RESTOptions) {
 		data = append(data, []string{
 			catalog.Name,
 			catalog.Description,
+			catalog.Version,
+			builtinStr,
 			fmt.Sprintf("%d%%", catalog.Weights.QueuedRequests),
 			fmt.Sprintf("%d%%", catalog.Weights.SwappedRequests),
 			fmt.Sprintf("%d%%", catalog.Weights.KVCacheUsagePerc),
-			builtinStr,
 		})
 	}
 
@@ -157,23 +158,39 @@ func PrintGetLLMCatalogResult(resp *http.Response, o api.RESTOptions) {
 		fmt.Println(string(resultIndent))
 		return
 	}
+	table := TableInit()
 
-	// Print catalog details
-	fmt.Printf("Catalog Profile: %s\n", catalog.Name)
-	fmt.Printf("Description: %s\n", catalog.Description)
-	fmt.Printf("Version: %s\n", catalog.Version)
-	fmt.Printf("Built-in: %v\n\n", catalog.IsBuiltin)
-
-	fmt.Println("Weights:")
-	fmt.Printf("  Queued Requests:   %d%%\n", catalog.Weights.QueuedRequests)
-	fmt.Printf("  Swapped Requests:  %d%%\n", catalog.Weights.SwappedRequests)
-	fmt.Printf("  KV Cache Usage:    %d%%\n\n", catalog.Weights.KVCacheUsagePerc)
-
-	fmt.Println("Thresholds:")
-	fmt.Printf("  Queue High:        %d\n", catalog.Thresholds.QueueHigh)
-	fmt.Printf("  Queue Critical:    %d\n", catalog.Thresholds.QueueCritical)
-	fmt.Printf("  Swap High:         %d\n", catalog.Thresholds.SwapHigh)
-	fmt.Printf("  Swap Critical:     %d\n", catalog.Thresholds.SwapCritical)
-	fmt.Printf("  Cache High:        %d%%\n", catalog.Thresholds.CacheHigh)
-	fmt.Printf("  Cache Critical:    %d%%\n", catalog.Thresholds.CacheCritical)
+	var data [][]string
+	if o.PrintOption == "wide" {
+		table.SetHeader(LLM_CATALOG_DETAIL_TITLE)
+		// In wide mode, print as JSON format for detailed view
+		data = append(data, []string{
+			catalog.Name,
+			catalog.Description,
+			catalog.Version,
+			fmt.Sprintf("%d%%", catalog.Weights.QueuedRequests),
+			fmt.Sprintf("%d%%", catalog.Weights.SwappedRequests),
+			fmt.Sprintf("%d%%", catalog.Weights.KVCacheUsagePerc),
+			fmt.Sprintf("%v", catalog.IsBuiltin),
+			fmt.Sprintf("%d", catalog.Thresholds.QueueHigh),
+			fmt.Sprintf("%d", catalog.Thresholds.QueueCritical),
+			fmt.Sprintf("%d", catalog.Thresholds.SwapHigh),
+			fmt.Sprintf("%d", catalog.Thresholds.SwapCritical),
+			fmt.Sprintf("%d%%", catalog.Thresholds.CacheHigh),
+			fmt.Sprintf("%d%%", catalog.Thresholds.CacheCritical),
+		})
+	} else {
+		table.SetHeader(LLM_CATALOG_TITLE)
+		// Print catalog details
+		data = append(data, []string{
+			catalog.Name,
+			catalog.Description,
+			catalog.Version,
+			fmt.Sprintf("%v", catalog.IsBuiltin),
+			fmt.Sprintf("%d%%", catalog.Weights.QueuedRequests),
+			fmt.Sprintf("%d%%", catalog.Weights.SwappedRequests),
+			fmt.Sprintf("%d%%", catalog.Weights.KVCacheUsagePerc),
+		})
+	}
+	TableShow(data, table)
 }

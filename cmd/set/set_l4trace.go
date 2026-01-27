@@ -34,8 +34,9 @@ func NewSetL4TraceSamplingCmd(restOptions *api.RESTOptions) *cobra.Command {
 	var l4TraceSamplingMod L4TraceSamplingMod
 
 	var SetL4TraceSamplingCmd = &cobra.Command{
-		Use:   "l4trace-sampling",
-		Short: "Update L4 tracing sampling rate",
+		Use:     "l4trace",
+		Short:   "Update L4 tracing sampling rate",
+		Aliases: []string{"l4trace-sample", "l4trace-sampling"},
 		Long: `Set the percentage of connections to trace (0-100).
 Examples:
   # Set to 50% sampling
@@ -73,7 +74,7 @@ Examples:
 
 func PrintL4TraceSamplingResult(resp *api.RESTResponse, printOption string) {
 	if printOption == "json" {
-		resultIndent, _ := json.MarshalIndent(resp, "", "\t")
+		resultIndent, _ := json.MarshalIndent(resp, "", "    ")
 		fmt.Println(string(resultIndent))
 		return
 	}

@@ -33,5 +33,4 @@ func PrintCreateResult(resp *http.Response, o api.RESTOptions) {
 		fmt.Println(string(resultIndent))
 		return
 	}
-	fmt.Println("L4 tracing enabled successfully")
 }

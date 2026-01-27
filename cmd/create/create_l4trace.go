@@ -52,7 +52,7 @@ Examples:
 
 			client := api.NewLoxiClient(restOptions)
 			ctx := context.TODO()
-			resp, err := client.L4Trace().EnableCreate(ctx, &l4TraceEnableMod)
+			resp, err := client.L4Trace().Create(ctx, &l4TraceEnableMod)
 			if err != nil {
 				fmt.Printf("Error: %s\n", err.Error())
 				return
@@ -64,8 +64,7 @@ Examples:
 		},
 	}
 
-	CreateL4TraceCmd.Flags().Int64VarP(&l4TraceEnableMod.SamplingRate, "sampling", "s", 100,
-		"Sampling rate (0-100 percent, default: 100)")
+	CreateL4TraceCmd.Flags().Int64VarP(&l4TraceEnableMod.SamplingRate, "sampling", "", 100, "Sampling rate (0-100 percent, default: 100)")
 
 	return CreateL4TraceCmd
 }

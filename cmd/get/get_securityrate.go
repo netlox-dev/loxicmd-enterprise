@@ -64,7 +64,7 @@ func PrintGetSecurityRateResult(resp *http.Response, o api.RESTOptions) {
 	}
 
 	table := TableInit()
-	table.SetHeader([]string{"status", "synThreshold", "cookieThreshold", "connRate", "ratePerSec", "concurrentLimit", "udpEnabled", "udpPkt", "udpBW(MB)", "whitelist", "synBlocked", "synPassed", "connBlocked", "connPassed", "concurrentBlocked", "udpBlocked", "udpPassed", "uniqueIps"})
+	table.SetHeader(SECURITY_RATE_TITLE)
 
 	for _, entry := range srResp.SecurityRateInfo {
 		status := "disabled"

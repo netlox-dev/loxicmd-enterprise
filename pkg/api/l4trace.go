@@ -26,8 +26,8 @@ type L4Trace struct {
 	CommonAPI
 }
 
-// EnableCreate sends a POST request to enable L4 tracing with sampling configuration
-func (t *L4Trace) EnableCreate(ctx context.Context, body interface{}) (*RESTResponse, error) {
+// Create sends a POST request to enable L4 tracing with sampling configuration
+func (t *L4Trace) Create(ctx context.Context, body interface{}) (*RESTResponse, error) {
 	t.requestInfo.subResource = []string{"enable"}
 
 	jsonBody, err := json.Marshal(body)
