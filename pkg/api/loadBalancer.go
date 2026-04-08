@@ -41,35 +41,37 @@ type LoadBalancerModel struct {
 }
 
 type LoadBalancerService struct {
-	ExternalIP           string   `json:"externalIP"         yaml:"externalIP"`
-	Port                 uint16   `json:"port"               yaml:"port"`
-	PortMax              uint16   `json:"portMax,omitempty"  yaml:"portmax"`
-	Protocol             string   `json:"protocol"           yaml:"protocol"`
-	Sel                  EpSelect `json:"sel"                yaml:"sel"`
-	Mode                 LbMode   `json:"mode"               yaml:"mode"`
-	BGP                  bool     `json:"BGP"                yaml:"BGP"`
-	Monitor              bool     `json:"Monitor"            yaml:"Monitor"`
-	Timeout              uint32   `json:"inactiveTimeOut"    yaml:"inactiveTimeOut"`
-	Block                uint32   `json:"block"              yaml:"block"`
-	Managed              bool     `json:"managed,omitempty"  yaml:"managed"`
-	Name                 string   `json:"name,omitempty"     yaml:"name"`
-	Snat                 bool     `json:"snat,omitempty"`
-	Oper                 LbOP     `json:"oper,omitempty"`
-	Security             LbSec    `json:"security,omitempty" yaml:"security"`
-	Host                 string   `json:"host,omitempty"     yaml:"path"`
-	PpV2                 bool     `json:"proxyprotocolv2"    yaml:"proxyprotocolv2"`
-	Egress               bool     `json:"egress"             yaml:"egress"`
-	LLMType              string   `json:"llmType,omitempty" yaml:"llmType"`
-	TraceType            string   `json:"traceType,omitempty" yaml:"traceType"`
-	PathPrefix           string   `json:"pathPrefix,omitempty"    yaml:"pathPrefix"`
-	PathMatchMode        string   `json:"pathMatchMode,omitempty" yaml:"pathMatchMode"`
-	BackendProtocol      string   `json:"backendProtocol,omitempty" yaml:"backendProtocol"`
-	SessionHeaderName    string   `json:"sessionHeaderName,omitempty" yaml:"sessionHeaderName"`
-	ChwblPrefixHashLevel int      `json:"chwblPrefixHashLevel,omitempty" yaml:"chwblPrefixHashLevel"`
-	ChwblPrefixHashFlags int      `json:"chwblPrefixHashFlags,omitempty" yaml:"chwblPrefixHashFlags"`
-	ChwblMeanLoadFactor  int      `json:"chwblMeanLoadFactor,omitempty" yaml:"chwblMeanLoadFactor"`
-	ChwblReplication     int      `json:"chwblReplication,omitempty" yaml:"chwblReplication"`
-	ChwblEnableCacheSalt bool     `json:"chwblEnableCacheSalt,omitempty" yaml:"chwblEnableCacheSalt"`
+	ExternalIP           string                                        `json:"externalIP"         yaml:"externalIP"`
+	Port                 uint16                                        `json:"port"               yaml:"port"`
+	PortMax              uint16                                        `json:"portMax,omitempty"  yaml:"portmax"`
+	Protocol             string                                        `json:"protocol"           yaml:"protocol"`
+	Sel                  EpSelect                                      `json:"sel"                yaml:"sel"`
+	Mode                 LbMode                                        `json:"mode"               yaml:"mode"`
+	BGP                  bool                                          `json:"BGP"                yaml:"BGP"`
+	Monitor              bool                                          `json:"Monitor"            yaml:"Monitor"`
+	Timeout              uint32                                        `json:"inactiveTimeOut"    yaml:"inactiveTimeOut"`
+	Block                uint32                                        `json:"block"              yaml:"block"`
+	Managed              bool                                          `json:"managed,omitempty"  yaml:"managed"`
+	Name                 string                                        `json:"name,omitempty"     yaml:"name"`
+	Snat                 bool                                          `json:"snat,omitempty"`
+	Oper                 LbOP                                          `json:"oper,omitempty"`
+	Security             LbSec                                         `json:"security,omitempty" yaml:"security"`
+	Host                 string                                        `json:"host,omitempty"     yaml:"path"`
+	PpV2                 bool                                          `json:"proxyprotocolv2"    yaml:"proxyprotocolv2"`
+	Egress               bool                                          `json:"egress"             yaml:"egress"`
+	LLMType              string                                        `json:"llmType,omitempty" yaml:"llmType"`
+	TraceType            string                                        `json:"traceType,omitempty" yaml:"traceType"`
+	PathPrefix           string                                        `json:"pathPrefix,omitempty"    yaml:"pathPrefix"`
+	PathMatchMode        string                                        `json:"pathMatchMode,omitempty" yaml:"pathMatchMode"`
+	BackendProtocol      string                                        `json:"backendProtocol,omitempty" yaml:"backendProtocol"`
+	SessionHeaderName    string                                        `json:"sessionHeaderName,omitempty" yaml:"sessionHeaderName"`
+	ChwblPrefixHashLevel int                                           `json:"chwblPrefixHashLevel,omitempty" yaml:"chwblPrefixHashLevel"`
+	ChwblPrefixHashFlags int                                           `json:"chwblPrefixHashFlags,omitempty" yaml:"chwblPrefixHashFlags"`
+	ChwblMeanLoadFactor  int                                           `json:"chwblMeanLoadFactor,omitempty" yaml:"chwblMeanLoadFactor"`
+	ChwblReplication     int                                           `json:"chwblReplication,omitempty" yaml:"chwblReplication"`
+	ChwblEnableCacheSalt bool                                          `json:"chwblEnableCacheSalt,omitempty" yaml:"chwblEnableCacheSalt"`
+	MtlsBackend          *LoadbalanceEntryServiceArgumentsMtlsBackend  `json:"mtls_backend,omitempty"`
+	MtlsFrontend         *LoadbalanceEntryServiceArgumentsMtlsFrontend `json:"mtls_frontend,omitempty"`
 	// Deprecated fields - to be removed eventually
 	LLMTypeOld              string `json:"llm_type,omitempty" yaml:"llm_type" deprecated:"Use llmType instead of llm_type"`
 	TraceTypeOld            string `json:"trace_type,omitempty" yaml:"trace_type" deprecated:"Use traceType instead of trace_type"`
@@ -105,6 +107,23 @@ type ConfigurationLBFile struct {
 	TypeMeta   `yaml:",inline"`
 	ObjectMeta `yaml:"metadata,omitempty"`
 	Spec       LoadBalancerModel `yaml:"spec"`
+}
+
+type LoadbalanceEntryServiceArgumentsMtlsBackend struct {
+	BackendCaPath    string `json:"backend_ca_path,omitempty"`
+	ClientCertData   string `json:"client_cert_data,omitempty"`
+	ClientCertPath   string `json:"client_cert_path,omitempty"`
+	ClientKeyData    string `json:"client_key_data,omitempty"`
+	ClientKeyPath    string `json:"client_key_path,omitempty"`
+	VerifyServerCert *bool  `json:"verify_server_cert,omitempty"`
+}
+
+type LoadbalanceEntryServiceArgumentsMtlsFrontend struct {
+	ClientCaCertData string  `json:"client_ca_cert_data,omitempty"`
+	ClientCaPath     string  `json:"client_ca_path,omitempty"`
+	ClientCertMode   *string `json:"client_cert_mode,omitempty"`
+	ClientCnPattern  string  `json:"client_cn_pattern,omitempty"`
+	RequireClientCn  *bool   `json:"require_client_cn,omitempty"`
 }
 
 func (service LoadBalancerService) Key() string {
