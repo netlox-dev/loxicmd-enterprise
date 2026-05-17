@@ -84,11 +84,18 @@ func PrintGetCTResult(resp *http.Response, o api.RESTOptions) {
 
 	// Table Init
 	table := TableInit()
-	table.SetHeader([]string{"Service Name", "destIP", "srcIP", "dport", "sport", "proto", "ident", "state", "act", "packets", "bytes"})
-	// Making load balance data
-	data = makeConntrackData(o, ctresp)
 
-	// Rendering the load balance data to table
+	if o.PrintOption == "wide" {
+		// Phase 65 D-13: -o wide adds OFFLOAD_STATE + HW_PKTS at rightmost (D-13).
+		table.SetHeader(CONNTRACK_WIDE_TITLE)
+		data = makeConntrackDataWide(o, ctresp)
+	} else {
+		table.SetHeader([]string{"Service Name", "destIP", "srcIP", "dport", "sport", "proto", "ident", "state", "act", "packets", "bytes"})
+		// Making conntrack data
+		data = makeConntrackData(o, ctresp)
+	}
+
+	// Rendering the conntrack data to table
 	TableShow(data, table)
 }
 
@@ -109,6 +116,47 @@ func makeConntrackData(o api.RESTOptions, ctresp api.CtInformationGet) (data [][
 			conntrack.CAct,
 			fmt.Sprintf("%v", conntrack.Pkts),
 			fmt.Sprintf("%v", conntrack.Bytes),
+		})
+	}
+	return data
+}
+
+// makeConntrackDataWide builds the -o wide row set. Adds OFFLOAD_STATE and HW_PKTS
+// at the RIGHTMOST columns per D-13. When OffloadState is empty or "none" (omitempty
+// from a non-DOCA loxilb deployment), OFFLOAD_STATE shows "none" and HW_PKTS shows
+// "-" to preserve the table structure without confusing zero-padded values.
+func makeConntrackDataWide(o api.RESTOptions, ctresp api.CtInformationGet) (data [][]string) {
+	for _, conntrack := range ctresp.CtInfo {
+		if o.ServiceName != "" && o.ServiceName != conntrack.ServName {
+			continue
+		}
+
+		// OFFLOAD_STATE: show "none" when field is absent (omitempty → empty string).
+		offloadState := conntrack.OffloadState
+		if offloadState == "" {
+			offloadState = "none"
+		}
+
+		// HW_PKTS: show "-" for non-offloaded entries (state "none") per D-13 dash convention.
+		hwPkts := "-"
+		if offloadState != "none" {
+			hwPkts = fmt.Sprintf("%d", conntrack.HwPkts)
+		}
+
+		data = append(data, []string{
+			conntrack.ServName,
+			conntrack.Dip,
+			conntrack.Sip,
+			fmt.Sprintf("%d", conntrack.Dport),
+			fmt.Sprintf("%d", conntrack.Sport),
+			conntrack.Proto,
+			conntrack.Ident,
+			conntrack.CState,
+			conntrack.CAct,
+			fmt.Sprintf("%v", conntrack.Pkts),
+			fmt.Sprintf("%v", conntrack.Bytes),
+			offloadState,
+			hwPkts,
 		})
 	}
 	return data

@@ -219,6 +219,17 @@ func PrintGetLbResult(resp *http.Response, o api.RESTOptions) {
 				}
 			}
 
+			// Phase 65 D-13: compute OFFLOAD_STATE + HW_PKTS for -o wide columns.
+			// lbrule.OffloadState is aggregate rule-level state (omitempty → empty on non-DOCA).
+			lbOffloadState := lbrule.OffloadState
+			if lbOffloadState == "" {
+				lbOffloadState = "none"
+			}
+			lbHwPkts := "-"
+			if lbOffloadState != "none" {
+				lbHwPkts = fmt.Sprintf("%d", lbrule.HwPkts)
+			}
+
 			if lbrule.Service.Monitor {
 				for i, eps := range lbrule.Endpoints {
 					if i == 0 {
@@ -259,13 +270,13 @@ func PrintGetLbResult(resp *http.Response, o api.RESTOptions) {
 						}
 						if lbrule.Service.PortMax == 0 {
 							data = append(data, []string{lbrule.Service.ExternalIP, secIPs, sources, lbrule.Service.Host, lbrule.Service.PathPrefix, pathMatchMode, fmt.Sprintf("%d", lbrule.Service.Port), protocolStr, lbrule.Service.Name, fmt.Sprintf("%d", lbrule.Service.Block), NumToSelect(int(lbrule.Service.Sel)), NumToMode(int(lbrule.Service.Mode), lbrule.Service.PpV2, lbrule.Service.Egress), catalog, traceType, backendProto, sessionHdr, chwblLvl, chwblFlags, chwblLF, chwblRepl, chwblSalt,
-								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter})
+								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter, lbOffloadState, lbHwPkts})
 						} else {
 							data = append(data, []string{lbrule.Service.ExternalIP, secIPs, sources, lbrule.Service.Host, lbrule.Service.PathPrefix, pathMatchMode, fmt.Sprintf("%d-%d", lbrule.Service.Port, lbrule.Service.PortMax), protocolStr, lbrule.Service.Name, fmt.Sprintf("%d", lbrule.Service.Block), NumToSelect(int(lbrule.Service.Sel)), NumToMode(int(lbrule.Service.Mode), lbrule.Service.PpV2, lbrule.Service.Egress), catalog, traceType, backendProto, sessionHdr, chwblLvl, chwblFlags, chwblLF, chwblRepl, chwblSalt,
-								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter})
+								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter, lbOffloadState, lbHwPkts})
 						}
 					} else {
-						data = append(data, []string{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter})
+						data = append(data, []string{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter, "", ""})
 					}
 				}
 			} else {
@@ -308,13 +319,13 @@ func PrintGetLbResult(resp *http.Response, o api.RESTOptions) {
 						}
 						if lbrule.Service.PortMax == 0 {
 							data = append(data, []string{lbrule.Service.ExternalIP, secIPs, sources, lbrule.Service.Host, lbrule.Service.PathPrefix, pathMatchMode, fmt.Sprintf("%d", lbrule.Service.Port), protocolStr, lbrule.Service.Name, fmt.Sprintf("%d", lbrule.Service.Block), NumToSelect(int(lbrule.Service.Sel)), NumToMode(int(lbrule.Service.Mode), lbrule.Service.PpV2, lbrule.Service.Egress), catalog, traceType, backendProto, sessionHdr, chwblLvl, chwblFlags, chwblLF, chwblRepl, chwblSalt,
-								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter})
+								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter, lbOffloadState, lbHwPkts})
 						} else {
 							data = append(data, []string{lbrule.Service.ExternalIP, secIPs, sources, lbrule.Service.Host, lbrule.Service.PathPrefix, pathMatchMode, fmt.Sprintf("%d-%d", lbrule.Service.Port, lbrule.Service.PortMax), protocolStr, lbrule.Service.Name, fmt.Sprintf("%d", lbrule.Service.Block), NumToSelect(int(lbrule.Service.Sel)), NumToMode(int(lbrule.Service.Mode), lbrule.Service.PpV2, lbrule.Service.Egress), catalog, traceType, backendProto, sessionHdr, chwblLvl, chwblFlags, chwblLF, chwblRepl, chwblSalt,
-								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter})
+								eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter, lbOffloadState, lbHwPkts})
 						}
 					} else {
-						data = append(data, []string{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter})
+						data = append(data, []string{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", eps.EndpointIP, fmt.Sprintf("%d", eps.TargetPort), fmt.Sprintf("%d", eps.Weight), "-", eps.Counter, "", ""})
 					}
 				}
 			}

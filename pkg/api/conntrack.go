@@ -40,6 +40,14 @@ type ConntrackInformation struct {
 	Pkts     uint64 `json:"packets"`
 	Bytes    uint64 `json:"bytes"`
 	ServName string `json:"servName"`
+
+	// Phase 65 D-13: DOCA HW offload telemetry fields.
+	// OffloadState is one of "none", "transitioning", "hw". Empty string when
+	// the loxilb server does not have a DOCA plugin active (omitempty — absent
+	// from JSON on non-DOCA deployments so legacy tools are unaffected).
+	OffloadState string `json:"offload_state,omitempty"`
+	// HwPkts is the DOCA hardware packet count for this CT entry (omitempty).
+	HwPkts uint64 `json:"hw_pkts,omitempty"`
 }
 
 func (ct ConntrackInformation) Key() string {

@@ -38,6 +38,12 @@ type LoadBalancerModel struct {
 	SecondaryIPs []LoadBalancerSecIp    `json:"secondaryIPs" yaml:"secondaryIPs"`
 	SrcIPs       []LbAllowedSrcIPArg    `json:"allowedSources" yaml:"allowedSources"`
 	Endpoints    []LoadBalancerEndpoint `json:"endpoints" yaml:"endpoints"`
+
+	// Phase 65 D-13: aggregate DOCA HW offload state for this LB service.
+	// Absent from JSON on non-DOCA loxilb deployments (omitempty).
+	OffloadState string `json:"offload_state,omitempty"`
+	// HwPkts is the aggregate DOCA hardware packet count (omitempty).
+	HwPkts uint64 `json:"hw_pkts,omitempty"`
 }
 
 type LoadBalancerService struct {
